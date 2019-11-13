@@ -1,12 +1,10 @@
 import pygame
 
-from pong import Ball, Player, WIDTH, HEIGHT
+from pong import Pong
 
-def start_game(window):
-    player1 = Player(True, 'Player 1')
-    player2 = Player(False, 'Player2')
-    ball = Ball(1, True)
+def start_game(window, game):
 
+    move_up, move_down = -1, 1
     shouldRun = True
     while shouldRun:
         pygame.time.delay(200)
@@ -15,31 +13,34 @@ def start_game(window):
             if event.type == pygame.QUIT:
                 shouldRun = False
 
-        ball.update_coords([player1.paddle, player2.paddle])
+        game.update_ball_coords()
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_UP]:
-            player1.paddle.update_coords(1)
+            game.update_player_coords(game.player1, move_up)
         elif keys[pygame.K_DOWN]:
-            player1.paddle.update_coords(-1)
+            game.update_player_coords(game.player1, move_down)
         elif keys[pygame.K_LEFT]:
-            player2.paddle.update_coords(1)
+            game.update_player_coords(game.player2, move_up)
         elif keys[pygame.K_RIGHT]:
-            player2.paddle.update_coords(-1)
+            game.update_player_coords(game.player2, move_down)
         
         window.fill((0,0,0))
         
-        player1.paddle.draw(window)
-        player2.paddle.draw(window)
-        ball.draw(window)
+        game.draw(window)
+        #  player1.paddle.draw(window)
+        #  player2.paddle.draw(window)
+        #  ball.draw(window)
 
         pygame.display.update()
 
 if __name__ == '__main__':
     pygame.init()
    
-    win = pygame.display.set_mode((WIDTH, HEIGHT))
+    pong = Pong(['Player 1', 'Player 2'])
+
+    win = pygame.display.set_mode(tuple(pong.screen_dims))
     pygame.display.set_caption('I am nice at ping pong')
-    start_game(win)
+    start_game(win, pong)
 
     pygame.quit()
